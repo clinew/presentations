@@ -107,7 +107,7 @@
 		\frametitle{``Where are my configuration files?''}
 		\begin{itemize}
 		\item Dot files.
-		\item Within home directory \texttt{~/}.
+		\item Within home directory \texttt{\textasciitilde /}.
 		\end{itemize}
 	\end{frame}
 
@@ -143,7 +143,6 @@
 		\frametitle{``Any other questions?''}
 		\begin{itemize}
 		\item If you have a question then others may, too.
-		\item Help me improve this guide!
 		\end{itemize}
 	\end{frame}
 
@@ -214,7 +213,7 @@
 		\frametitle{Specific Directories (cont.)}
 		\begin{itemize}
 		\item \texttt{/root}, home directory for root.
-		\item \texttt{/run}, volatile information accumulated since system boot; usually not important.
+		\item \texttt{/run}, volatile information accumulated since system boot; daemon PID files, \&c.
 		\item \texttt{/sys}, Virtual filesystem, exports kernel objects.
 		\item \texttt{/tmp}, Temporary files for programs; usually not important.
 		\item \texttt{/var}, Data that varies over time (system logs, mail, \&c.).
@@ -231,6 +230,7 @@
 		\item Block files.
 		\item Character files.
 		\item Socket files.
+		\item Directories
 		\item \texttt{ls -l}
 		\end{itemize}
 	\end{frame}
@@ -326,7 +326,7 @@
 		\begin{itemize}
 			\item \underline{D}isk \underline{d}uplicator (or \underline{d}isk \underline{d}ump).
 			\item \texttt{if=<path>}, \underline{i}nput \underline{f}ile.
-			\item \texttt{of=<path>}, \underline{o}output \underline{f}ile.
+			\item \texttt{of=<path>}, \underline{o}utput \underline{f}ile.
 			\item \texttt{bs=<size>}, block size.
 			\item \texttt{count=<size>}, number of block to transfer.
 		\end{itemize}
