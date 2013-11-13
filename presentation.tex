@@ -1,0 +1,362 @@
+% Thanks to Kevin D. McGrath for the presentation template.
+\documentclass[xcolor={dvipsnames,svgnames},hyperref=dvips]{beamer}
+
+% Packages.
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{url}
+\usepackage{pstricks}
+\usepackage{pst-node}
+
+% Hyperlinks.
+\def\name{Wade Cline}
+\hypersetup{
+  colorlinks = true,
+  citecolor = black,
+  linkcolor = black,
+  urlcolor = black,
+  pdfauthor = {\name},
+  pdfkeywords = {``computer science'', lug, fs, filesystems},
+  pdftitle = {Linux Filesystems for Windows Users,},
+  pdfsubject = {Linux Filesystems Introduction},
+  pdfpagemode = UseNone
+}
+
+% ???
+\usetheme[hideothersubsections]{Hannover}
+\usecolortheme{sidebartab}
+
+% Presentation metadata.
+\title[Linux Filesystems Introduction]{An Introduction to the Linux Filesystem for Windows Users}
+\author{Wade Cline}
+\date{12 November 2013}
+
+\AtBeginSection[]
+{
+  \begin{frame}<beamer>{Outline}
+    \tableofcontents[currentsection]
+  \end{frame}
+}
+\AtBeginSubsection[]
+{
+  \begin{frame}<beamer>{Outline}
+    % \transwipe
+    \tableofcontents[currentsection,currentsubsection]
+  \end{frame}
+}
+
+\begin{document}
+
+% Title.
+\begin{frame}
+  \titlepage
+\end{frame}
+
+% Table of Contents.
+\begin{frame}{Outline}
+  % \transwipe
+  \tableofcontents
+  % You might wish to add the option [pausesections]
+\end{frame}
+
+\section{Moving Over From Windows}\label{section:windowsux}
+	\subsection{Terminology}
+	\begin{frame}
+		\frametitle{Terminology}
+		\begin{itemize}
+		\item Binaries, not executables.
+		\item Directories, not folders.
+		\item Read, not load.
+		\item Symbolic links, not shortcuts.
+		\item Write, not save.
+		\end{itemize}
+	\end{frame}
+
+	\subsection{Frequently Asked Questions}
+	\begin{frame}
+		\frametitle{``Where is \texttt{Program Files}?''}
+		\begin{itemize}
+		\item \texttt{/bin}, \texttt{/sbin}, \texttt{/usr/bin}, \texttt{/usr/sbin}, \texttt{/usr/local/bin}, \texttt{/usr/local/sbin}
+		\item PATH environment variable
+		\item \texttt{which} command
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{``Where is my \texttt{Trash Bin}?''}
+		\begin{itemize}
+		\item Depends on the Desktop, not the filesystem.
+		\item ``So then what's \texttt{Lost+Found}?''
+			\begin{itemize}
+			\item Lost blocks of the filesystem.
+			\item Usually not an issue.
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{``Where is my data stored?''}
+		\begin{itemize}
+		\item \texttt{/home/<username>}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{``Where are my configuration files?''}
+		\begin{itemize}
+		\item Dot files.
+		\item Within home directory \texttt{~/}.
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{``Where does my USB stick appear?''}
+		\begin{itemize}
+		\item Raw file appears under \texttt{/dev}.
+			\begin{itemize}
+			\item \texttt{dmesg | tail} for the exact name.
+			\end{itemize}
+		\item Filesystem usually mounted under \texttt{/media}.
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{``Where is my \texttt{C://} drive?"}
+		\begin{itemize}
+		\item Like USB sticks, under \texttt{/dev}.
+		\item Usually mounted as root \texttt{/}.
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{``How much space do I have/how much space am I using?''}
+		\begin{itemize}
+		\item Use \texttt{df} to see \underline{d}isk \underline{f}ree space.
+		\item Use \texttt{du} to see \underline{d}isk \underline{u}sage.
+		\item Default output is in bytes, \texttt{-h} for \underline{h}uman-readable output.
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{``Any other questions?''}
+		\begin{itemize}
+		\item If you have a question then others may, too.
+		\item Help me improve this guide!
+		\end{itemize}
+	\end{frame}
+
+\section{Linux Filesystem Hierarchy}\label{section:lfsh}
+	\subsection{The Three Tiers}
+	\begin{frame}
+		\frametitle{The Three Tiers}
+		\begin{itemize}
+		\item \texttt{/}, essential for system booting and mounting \texttt{/usr}.
+		\item \texttt{/usr}, read-only system data for normal system operation.
+		\item \texttt{/usr/local}, locally-installed software.
+			\begin{itemize}
+			\item Package managers usually install under \texttt{/} and \texttt{/usr}.
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\subsection{Common Directories}
+	\begin{frame}
+		\frametitle{Common Directories}
+		\begin{itemize}
+		\item \texttt{/bin}, \underline{bin}ary files.
+		\item \texttt{/include}, header files for C/C++ Programs (\texttt{stdlib.h}, \texttt{stdio.h}, \texttt{string.h}, \&c.).
+		\item \texttt{/lib}, \underline{lib}raries for programs.
+		\item \texttt{/sbin}, binary files for root (\underline{s}uperuser \underline{bin}aries).
+		\end{itemize}
+	\end{frame}
+
+	\subsection{Specific Directories}
+	\begin{frame}
+		\frametitle{Specific Directories}
+		\begin{itemize}
+		\item \texttt{/boot}, files essential for booting Linux.
+			\begin{itemize}
+			\item kernel, \texttt{initramfs}, \texttt{System.map}.
+			\end{itemize}
+		\item \texttt{/dev}, Virtual \texttt{devfs} filesystem that exports hardware devices as files.
+			\begin{itemize}
+			\item Hard Drives.
+			\item CD drives.
+			\item Floppy drives.
+			\item \texttt{tty}s.
+			\item More details later.
+			\end{itemize}
+		\item \texttt{/etc}, system-wide configuration files.
+		\item \texttt{/home}, user's data.
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Specific Directories (cont.)}
+		\begin{itemize}
+		\item \texttt{/media}, USB sticks, flash cards, and other removable storage devices.
+		\item \texttt{/mnt}, like \texttt{/media}, usually for System Administrators.
+		\item \texttt{/opt}, ``Add-on application software packages''; usually not important.
+		\item \texttt{/proc}, Virtual filesystem that exports system data.
+			\begin{itemize}
+			\item \texttt{/proc/cpuinfo}, processor information.
+			\item \texttt{/proc/meminfo}, memory information.
+			\item \texttt{/proc/version}, Linux version and distribution information.
+			\item Some files may be ineracted with.
+			\item \texttt{echo 3 > /proc/sys/vm/drop\_caches} to drop caches.
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+		
+	\begin{frame}
+		\frametitle{Specific Directories (cont.)}
+		\begin{itemize}
+		\item \texttt{/root}, home directory for root.
+		\item \texttt{/run}, volatile information accumulated since system boot; usually not important.
+		\item \texttt{/sys}, Virtual filesystem, exports kernel objects.
+		\item \texttt{/tmp}, Temporary files for programs; usually not important.
+		\item \texttt{/var}, Data that varies over time (system logs, mail, \&c.).
+		\item \texttt{/usr/share}, Architecture-independent, read-only data (\texttt{lspci}).
+		\item \texttt{/usr/src}, kernel source code.
+		\end{itemize}
+	\end{frame}
+
+\section{Power User Topics}\label{section:poweruser}
+	\begin{frame}
+		\frametitle{File types}
+		\begin{itemize}
+		\item Regular files.
+		\item Block files.
+		\item Character files.
+		\item Socket files.
+		\item \texttt{ls -l}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Links}
+		\begin{itemize}
+		\item Symbolic.
+		\item Hard.
+		\item \texttt{stat}
+		\item \texttt{ls -l}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{\texttt{devfs}}
+		\begin{itemize}
+		\item \texttt{sd*}
+		\item \texttt{sr*}
+		\item \texttt{/dev/null}
+		\item \texttt{/dev/random}
+		\item \texttt{/dev/urandom}
+		\item \texttt{/dev/zero}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Formatting Filesystems}
+		\begin{itemize}
+		\item \texttt{mkfs}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Mounting Filesystems}
+		\begin{itemize}
+		\item \texttt{mount}
+		\item \texttt{-t type}
+		\item \texttt{-o options}
+		\item \texttt{device path}
+		\item \texttt{mount point}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Loopback Devices}
+		\begin{itemize}
+		\item File as a block device.
+		\item \texttt{/dev/loop*}
+		\item \texttt{losetup}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Metadata vs. Data}
+		\begin{itemize}
+		\item Metadata used within the filesystem for its own purposes.
+		\item Data refers to files within the filesystem.
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Filesystem Consistency}
+		\begin{itemize}
+		\item Consistent if all metadata is intact.
+		\item \texttt{fsck}, \underline{f}ile\underline{s}ystem \underline{c}onsistency chec\underline{k}.
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Journaling}
+		\begin{itemize}
+		\item Filesystem \emph{consistency} tool; protections against system freezes, power outages, \&c.
+		\item \emph{Replaying} the journal.
+		\item \texttt{ext3}'s three modes of journaling:
+			\begin{itemize}
+			\item \texttt{journal}: Data and metadata to journal.
+			\item \texttt{ordered}: Data updates to filesystem, then metadata comitted to journal.
+			\item \texttt{writeback}: Metadata comitted to journal, possibly before data updates.
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Block size}
+		\begin{itemize}
+			\item Size of chunks allocated for files.
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{\texttt{dd}}
+		\begin{itemize}
+			\item \underline{D}isk \underline{d}uplicator (or \underline{d}isk \underline{d}ump).
+			\item \texttt{if=<path>}, \underline{i}nput \underline{f}ile.
+			\item \texttt{of=<path>}, \underline{o}output \underline{f}ile.
+			\item \texttt{bs=<size>}, block size.
+			\item \texttt{count=<size>}, number of block to transfer.
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{\texttt{/etc/fstab}}
+		\begin{itemize}
+			\item Which filesystems get mounted where.
+			\item device\_file mount\_point filesystem\_type options dump check
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{\texttt{/etc/mtab}}
+		\begin{itemize}
+			\item Which filesystems are currently mounted where.
+			\item Format usually same as \texttt{/etc/fstab}.
+		\end{itemize}
+	\end{frame}
+
+% References
+\section{References}
+
+\begin{frame}
+	\frametitle{References}
+	\begin{itemize}
+	\item ``Filesystem Hierarchy Standard''. Rusty Russell, Christopher Yeoh, and Dan Quinlan. Version 2.3. \texttt{http://refspecs.linuxfoundation.org/fhs.shtml}
+	\end{itemize}
+\end{frame}
+
+\end{document}
+
