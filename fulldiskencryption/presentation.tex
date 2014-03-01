@@ -1,0 +1,217 @@
+% Thanks to Kevin D. McGrath for the presentation template.
+\documentclass[xcolor={dvipsnames,svgnames},hyperref=dvips]{beamer}
+
+% Packages.
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{url}
+\usepackage{pstricks}
+\usepackage{pst-node}
+
+% Hyperlinks.
+\def\name{Wade Cline}
+\hypersetup{
+  colorlinks = true,
+  citecolor = black,
+  linkcolor = black,
+  urlcolor = black,
+  pdfauthor = {\name},
+  pdfkeywords = {``computer science'', lug, cryptography, full-disk},
+  pdftitle = {Linux Full-Disk Encryption},
+  pdfsubject = {Full-Disk Encryption Basics},
+  pdfpagemode = UseNone
+}
+
+% ???
+\usetheme[hideothersubsections]{Hannover}
+\usecolortheme{sidebartab}
+
+% Presentation metadata.
+\title[Full-Disk Encryption]{}
+\author{Wade Cline}
+\date{04 March 2014}
+
+\AtBeginSection[]
+{
+  \begin{frame}<beamer>{Outline}
+    \tableofcontents[currentsection]
+  \end{frame}
+}
+\AtBeginSubsection[]
+{
+  \begin{frame}<beamer>{Outline}
+    % \transwipe
+    \tableofcontents[currentsection,currentsubsection]
+  \end{frame}
+}
+
+\begin{document}
+
+% Title.
+\begin{frame}
+  \titlepage
+\end{frame}
+
+% Table of Contents.
+\begin{frame}{Outline}
+  % \transwipe
+  \tableofcontents
+  % You might wish to add the option [pausesections]
+\end{frame}
+
+\section{Basics}\label{section:basics}
+	\subsection{Plaintext vs. Ciphertext}
+	\begin{frame}
+		\frametitle{Plaintext vs. Ciphertext}
+		\begin{itemize}
+		\item Plaintext: Unencrypted data.
+		\item Ciphertext: Encrypted data.
+		%TODO: Encryption and Decryption images.
+		\end{itemize}
+	\end{frame}
+
+	\subsection{Symmetric vs. Asymetric Cryptography}
+	\begin{frame}
+		\frametitle{Symmetric Cryptography}
+		\begin{itemize}
+		\item Same key used to encrypt plaintext and to decrypt ciphertext. 
+		\item Useful when only one person needs access to information.
+		\item Subject of today's discussion.
+		\item Examples: AES, Blowfish, 3DES, Serpent, Twofish.
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Asymetric Cryptography}
+		\begin{itemize}
+		\item AKA Public-Private Key Cryptography.
+		\item Different keys used to encrypt plaintext and to decrypt ciphertext.
+		\item Useful when communicating securely between two people.
+		\item Example: RSA.
+		\end{itemize}
+	\end{frame}
+
+	\subsection{Stream vs. Block Ciphers}
+	\begin{frame}
+		\frametitle{Stream vs. Block Ciphers}
+		\begin{itemize}
+		\item Block Ciphers operate on larged, fixed-length chunks of bits.
+		\item Stream Ciphers encrypt digits one-at-a-time.
+		\item Similar to Block vs. Character Devices.
+		\item Block Ciphers subject of today's discussion.
+		\end{itemize}
+	\end{frame}
+
+	\subsection{Disk Layout}
+	\begin{frame}
+		\frametitle{Disk Layout}
+		\begin{itemize}
+		\item Linux divides disks into 512-byte sections known as \textit{sectors}.
+		\item Filesystem divides read/writes into \textit{blocksize} units (multiple of sector size).
+		% TODO: Visualization.
+		\end{itemize}
+	\end{frame}
+
+	\subsection{Wear-leveling}
+	\begin{frame}
+		\frametitle{Wear-leveling}
+		\begin{itemize}
+		\item Attempts to distribute writes evenly across the device.
+		\item Helps with device longevity.
+		\item Used mostly in USB and SSD devices.
+		\item Makes overwriting files difficult.
+		\end{itemize}
+	\end{frame}
+
+\section{Wiping}\label{wiping}
+	\subsection{Naive Wiping}
+	\begin{frame}
+		\frametitle{Naive Wiping}
+		\begin{itemize}
+		\item Nuke disk \textit{once} with a series of '0's.
+		\item Fast, simple, but leaks data.
+		\item Each filesystem has a metaphorical ``fingerprint''.
+		\item Proper analysis may reveal old data.
+		% TODO: Visualization/examples.
+		\end{itemize}
+	\end{frame}
+
+	\subsection{Secure Wiping}
+	\begin{frame}
+		\frametitle{Secure Wiping}
+		\begin{itemize}
+		\item Use cryptographic-grade pseudo-random numbers.
+			\begin{itemize}
+			\item \texttt{/dev/urandom} should provide a decent stream.
+			\item \texttt{/dev/random} in theory better, but in practice you'd be dead before completion.
+			\end{itemize}
+		\item Wipe multiple times.
+			\begin{itemize}
+			\item In theory, proper analysis could reveal previous magnetic states.
+			\item Government-recommended is 7 times.
+			\end{itemize}
+		\item Depending on size of drive, could take days or weeks.
+		\end{itemize}
+	\end{frame}
+
+\section{Encryption}\label{section:encryption}
+	\subsection{Mappings}
+	\begin{frame}
+		\frametitle{Mappings}
+		\begin{itemize}
+		\item Rather than ``encrypt'' function, create abstraction layer over device.
+		\item Entries go under the \texttt{/dev/mapper} directory.
+		\item For example, use \texttt{/dev/mapper/root} to access an encrypted \texttt{/dev/sda}.
+			\begin{itemize}
+			\item \texttt{/dev/sda} appears as garbage (because it's encrypted) to anyone looking at it.
+			\item \texttt{/dev/mapper/root} looks like a normal hard drive.
+			\end{itemize}
+		% TODO: Visualization.
+		\end{itemize}
+	\end{frame}
+
+	\subsection{\texttt{dm-crypt} vs. LUKS}
+	\begin{frame}
+		\frametitle{\texttt{cryptsetup}}
+		\begin{itemize}
+		\item \texttt{cryptsetup} front-end to kernel crypto API.
+		\item Two main modes: ``plain'' \texttt{dm-crypt} and LUKS (Linux Unified Key Setup).
+		\item LUKS is feature-rich, \texttt{dm-crypt} is not.
+		\item Detailed description of LUKS beyond scope of presentation.
+		\item Simplfied: Beginners use LUKS, advanced users \textit{may} wish to use \texttt{dm-crypt}.
+		\end{itemize}
+	\end{frame}
+
+	\subsection{Ciphers}
+	\begin{frame}
+	\end{frame}
+
+	\subsection{Chaining}
+	\begin{frame}
+	\end{frame}
+
+	\subsection{Initialization Vector}
+	\begin{frame}
+	\end{frame}
+
+	\subsection{Keyfiles}
+	\begin{frame}
+	\end{frame}
+
+	\subsection{Multiple Layes}
+	\begin{frame}
+	\end{frame}
+
+\section{Early Userspace}\label{section:hell}
+	\subsection{Early-Userspace hell}
+	\begin{frame}
+	\end{frame}
+
+% References?
+\begin{frame}
+\end{frame}
+
+\end{document}
+
