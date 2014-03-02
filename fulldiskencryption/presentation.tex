@@ -78,7 +78,7 @@
 		\begin{itemize}
 		\item Same key used to encrypt plaintext and to decrypt ciphertext. 
 		\item Useful when only one person needs access to information.
-		\item Subject of today's discussion.
+		\item Relevant to today's discussion.
 		\item Examples: AES, Blowfish, 3DES, Serpent, Twofish.
 		\end{itemize}
 	\end{frame}
@@ -93,14 +93,14 @@
 		\end{itemize}
 	\end{frame}
 
-	\subsection{Stream vs. Block Ciphers}
+	\subsection{Block vs. Stream Ciphers}
 	\begin{frame}
-		\frametitle{Stream vs. Block Ciphers}
+		\frametitle{Block vs. Stream Ciphers}
 		\begin{itemize}
 		\item Block Ciphers operate on larged, fixed-length chunks of bits.
 		\item Stream Ciphers encrypt digits one-at-a-time.
 		\item Similar to Block vs. Character Devices.
-		\item Block Ciphers subject of today's discussion.
+		\item Block Ciphers relevant to today's discussion.
 		\end{itemize}
 	\end{frame}
 
@@ -110,6 +110,11 @@
 		\begin{itemize}
 		\item Linux divides disks into 512-byte sections known as \textit{sectors}.
 		\item Filesystem divides read/writes into \textit{blocksize} units (multiple of sector size).
+		\item Encrypted on sector-level, though filesystem may do block-level writes.
+		\item Block Cipher size $\leq$ Sector size $\leq$ Block size
+			\begin{itemize}
+			\item Common values: 128 \textit{bits} - 512 \textit{bytes} - 4096 bytes, respectively.
+			\end{itemize}
 		% TODO: Visualization.
 		\end{itemize}
 	\end{frame}
@@ -122,6 +127,7 @@
 		\item Helps with device longevity.
 		\item Used mostly in USB and SSD devices.
 		\item Makes overwriting files difficult.
+		\item Emphasizes proactive encryption.
 		\end{itemize}
 	\end{frame}
 
@@ -130,10 +136,10 @@
 	\begin{frame}
 		\frametitle{Naive Wiping}
 		\begin{itemize}
-		\item Nuke disk \textit{once} with a series of '0's.
+		\item Nuke disk \textit{once} with a series of '0's (\texttt{/dev/zero}).
 		\item Fast, simple, but leaks data.
 		\item Each filesystem has a metaphorical ``fingerprint''.
-		\item Proper analysis may reveal old data.
+		\item Labratory forensic analysis may reveal old data (discussed later).
 		% TODO: Visualization/examples.
 		\end{itemize}
 	\end{frame}
@@ -150,25 +156,57 @@
 		\item Wipe multiple times.
 			\begin{itemize}
 			\item In theory, proper analysis could reveal previous magnetic states.
-			\item Government-recommended is 7 times.
+			\item Government-``recommended'' is 7 times.
 			\end{itemize}
-		\item Depending on size of drive, could take days or weeks.
+		\item Depending on size of drive and computing power this could take days or weeks.
 		\end{itemize}
 	\end{frame}
 
 \section{Encryption}\label{section:encryption}
-	\subsection{Mappings}
+	\subsection{Ciphers}
 	\begin{frame}
-		\frametitle{Mappings}
+		\frametitle{Ciphers}
 		\begin{itemize}
-		\item Rather than ``encrypt'' function, create abstraction layer over device.
-		\item Entries go under the \texttt{/dev/mapper} directory.
-		\item For example, use \texttt{/dev/mapper/root} to access an encrypted \texttt{/dev/sda}.
-			\begin{itemize}
-			\item \texttt{/dev/sda} appears as garbage (because it's encrypted) to anyone looking at it.
-			\item \texttt{/dev/mapper/root} looks like a normal hard drive.
-			\end{itemize}
+		\item Transforms a chunk of plaintext into ciphertext.
+		\item Examples: AES, Serpent, Twofish.
+		\end{itemize}
+	\end{frame}
+
+	\subsection{Mode of Operation}
+	\begin{frame}
+		\frametitle{Mode of Operation}
+		\begin{itemize}
+		\item Recall block ciphers work on fixed-length set of bits.
+		\item Recall Linux sector size is 512 \textit{bytes}.
+		\item Many of today's block ciphers are 128 \textit{bits}.
+		\item A \textit{mode of operation} describes how to repeatedly use a block cipher to encrypt a larger area, such as a sector.
+		\item Simply breaking apart reveals patterns in data.
+		\item Examples: CBC, XTS.
 		% TODO: Visualization.
+		\end{itemize}
+	\end{frame}
+
+	\subsection{Initialization Vector}
+	\begin{frame}
+		\frametitle{Initialization Vector}
+		\begin{itemize}
+		\item Part of the Mode of Operation.
+		\item What is the first block chained with? An \texttt{initialization vector}.
+		\item Must appear ``random'' to avoid watermarking.
+		\item Example: ESSIV.
+		\end{itemize}
+	\end{frame}
+
+	\subsection{Keyfiles}
+	\begin{frame}
+		\frametitle{Keyfiles}
+		\begin{itemize}
+		\item Instead of passphrase, use a \textit{keyfile}.
+		\item Not limited by human memory, fully-random numbers (\texttt{/dev/random}).
+		\item For added protection, encrypt keyfile with passphrase.
+			\begin{itemize}
+			\item Can also protect against keylogging.
+			\end{itemize}
 		\end{itemize}
 	\end{frame}
 
@@ -184,29 +222,50 @@
 		\end{itemize}
 	\end{frame}
 
-	\subsection{Ciphers}
+	\subsection{Mappings}
 	\begin{frame}
+		\frametitle{Mappings}
+		\begin{itemize}
+		\item Rather than ``encrypt'' function, create abstraction layer over device.
+		\item Entries go under the \texttt{/dev/mapper} directory.
+		\item For example, use \texttt{/dev/mapper/root} to access an encrypted \texttt{/dev/sda}.
+			\begin{itemize}
+			\item \texttt{/dev/sda} appears as garbage (because it's encrypted) to anyone looking at it.
+			\item \texttt{/dev/mapper/root} looks like a normal hard drive.
+			\end{itemize}
+		% TODO: Visualization.
+		\end{itemize}
 	\end{frame}
 
-	\subsection{Chaining}
+	\subsection{Multiple Layers}
 	\begin{frame}
-	\end{frame}
-
-	\subsection{Initialization Vector}
-	\begin{frame}
-	\end{frame}
-
-	\subsection{Keyfiles}
-	\begin{frame}
-	\end{frame}
-
-	\subsection{Multiple Layes}
-	\begin{frame}
+		\frametitle{Multiple Layers}
+		\begin{itemize}
+		\item Why rely on one cipher that may get cracked?
+		\item Make a mapping over the mapping.
+			\begin{itemize}
+			\item Example: \texttt{/dev/mapper/root -> /dev/mapper/.extra\_layer -> /dev/sda}
+			\end{itemize}
+		\item Keep adding layers for more security.
+		\end{itemize}
 	\end{frame}
 
 \section{Early Userspace}\label{section:hell}
 	\subsection{Early-Userspace hell}
 	\begin{frame}
+		\frametitle{Early-userspace Hell}
+		\begin{itemize}
+		\item No root fs, need to set it up.
+		\item Create "early userspace" environment to mount root filesystem.
+		\item Simply copying binaries unlikely to work (dynamically-linked).
+			\begin{itemize}
+			\item \texttt{ldd} shows dependencies.
+			\item Copy all dependencies, or just make binaries statically-linked.
+			\end{itemize}
+		\item \texttt{busybox} highly-useful toolkit.
+		\item Kernel will execute an \texttt{init} script.
+		\item CPIO gzipped archive.
+		\end{itemize}
 	\end{frame}
 
 % References?
