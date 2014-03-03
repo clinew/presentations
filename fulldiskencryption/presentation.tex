@@ -62,7 +62,7 @@
 \end{frame}
 
 \section{Basics}\label{section:basics}
-	\subsection{Plaintext vs. Ciphertext}
+	\subsection{Terminology}
 	\begin{frame}
 		\frametitle{Plaintext vs. Ciphertext}
 		\begin{itemize}
@@ -72,13 +72,13 @@
 		\end{itemize}
 	\end{frame}
 
-	\subsection{Symmetric vs. Asymetric Cryptography}
 	\begin{frame}
 		\frametitle{Symmetric Cryptography}
 		\begin{itemize}
 		\item Same key used to encrypt plaintext and to decrypt ciphertext. 
 		\item Useful when only one person needs access to information.
 		\item Relevant to today's discussion.
+		\item Contrasted with Asymetric Cryptography.
 		\item Examples: AES, Blowfish, 3DES, Serpent, Twofish.
 		\end{itemize}
 	\end{frame}
@@ -89,11 +89,11 @@
 		\item AKA Public-Private Key Cryptography.
 		\item Different keys used to encrypt plaintext and to decrypt ciphertext.
 		\item Useful when communicating securely between two people.
+		\item Contrasted with Symmetric Cryptography.
 		\item Example: RSA.
 		\end{itemize}
 	\end{frame}
 
-	\subsection{Block vs. Stream Ciphers}
 	\begin{frame}
 		\frametitle{Block vs. Stream Ciphers}
 		\begin{itemize}
@@ -104,7 +104,7 @@
 		\end{itemize}
 	\end{frame}
 
-	\subsection{Disk Layout}
+	\subsection{Physical Media}
 	\begin{frame}
 		\frametitle{Disk Layout}
 		\begin{itemize}
@@ -119,7 +119,6 @@
 		\end{itemize}
 	\end{frame}
 
-	\subsection{Wear-leveling}
 	\begin{frame}
 		\frametitle{Wear-leveling}
 		\begin{itemize}
@@ -132,7 +131,6 @@
 	\end{frame}
 
 \section{Wiping}\label{wiping}
-	\subsection{Naive Wiping}
 	\begin{frame}
 		\frametitle{Naive Wiping}
 		\begin{itemize}
@@ -144,7 +142,6 @@
 		\end{itemize}
 	\end{frame}
 
-	\subsection{Secure Wiping}
 	\begin{frame}
 		\frametitle{Secure Wiping}
 		\begin{itemize}
@@ -163,7 +160,7 @@
 	\end{frame}
 
 \section{Encryption}\label{section:encryption}
-	\subsection{Ciphers}
+	\subsection{Abstraction}
 	\begin{frame}
 		\frametitle{Ciphers}
 		\begin{itemize}
@@ -172,7 +169,6 @@
 		\end{itemize}
 	\end{frame}
 
-	\subsection{Mode of Operation}
 	\begin{frame}
 		\frametitle{Mode of Operation}
 		\begin{itemize}
@@ -186,18 +182,16 @@
 		\end{itemize}
 	\end{frame}
 
-	\subsection{Initialization Vector}
 	\begin{frame}
 		\frametitle{Initialization Vector}
 		\begin{itemize}
+		\item What is the first block chained with? An \textit{initialization vector}.
 		\item Part of the Mode of Operation.
-		\item What is the first block chained with? An \texttt{initialization vector}.
 		\item Must appear ``random'' to avoid watermarking.
 		\item Example: ESSIV.
 		\end{itemize}
 	\end{frame}
 
-	\subsection{Keyfiles}
 	\begin{frame}
 		\frametitle{Keyfiles}
 		\begin{itemize}
@@ -210,7 +204,18 @@
 		\end{itemize}
 	\end{frame}
 
-	\subsection{\texttt{dm-crypt} vs. LUKS}
+	\begin{frame}
+		\frametitle{Key-stretching}
+		\begin{itemize}
+		\item Passphrases usually \textit{hashed} before input into algorithm.
+		\item Increase number of hashing \textit{rounds} before input (0.5 - 2 seconds-worth).
+		\item Slows down brute-force attacks dramatically.
+		\end{itemize}
+	\end{frame}
+	
+	%TODO: Salts.
+
+	\subsection{Implementation}
 	\begin{frame}
 		\frametitle{\texttt{cryptsetup}}
 		\begin{itemize}
@@ -222,7 +227,6 @@
 		\end{itemize}
 	\end{frame}
 
-	\subsection{Mappings}
 	\begin{frame}
 		\frametitle{Mappings}
 		\begin{itemize}
@@ -237,7 +241,6 @@
 		\end{itemize}
 	\end{frame}
 
-	\subsection{Multiple Layers}
 	\begin{frame}
 		\frametitle{Multiple Layers}
 		\begin{itemize}
