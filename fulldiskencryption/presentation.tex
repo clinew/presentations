@@ -165,6 +165,7 @@
 		\frametitle{Ciphers}
 		\begin{itemize}
 		\item Transforms a chunk of plaintext into ciphertext.
+		\item Support must be enabled in the kernel.
 		\item Examples: AES, Serpent, Twofish.
 		\end{itemize}
 	\end{frame}
@@ -177,6 +178,7 @@
 		\item Many of today's block ciphers are 128 \textit{bits}.
 		\item A \textit{mode of operation} describes how to repeatedly use a block cipher to encrypt a larger area, such as a sector.
 		\item Simply breaking apart reveals patterns in data.
+		\item Support must be enabled in the kernel.
 		\item Examples: CBC, XTS.
 		% TODO: Visualization.
 		\end{itemize}
@@ -205,31 +207,28 @@
 	\end{frame}
 
 	\begin{frame}
+		\frametitle{Salts}
+		\begin{itemize}
+		\item \textit{Additional} input to passphrase during hashing.
+		\item Ensure \textit{uniqueness} of result.
+		\item Protects against Rainbow Tables.
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
 		\frametitle{Key-stretching}
 		\begin{itemize}
 		\item Passphrases usually \textit{hashed} before input into algorithm.
 		\item Increase number of hashing \textit{rounds} before input (0.5 - 2 seconds-worth).
-		\item Slows down brute-force attacks dramatically.
+		\item Slows down brute-force \& dictionary attacks dramatically.
 		\end{itemize}
 	\end{frame}
-	
-	%TODO: Salts.
 
 	\subsection{Implementation}
 	\begin{frame}
 		\frametitle{\texttt{cryptsetup}}
 		\begin{itemize}
 		\item \texttt{cryptsetup} front-end to kernel crypto API.
-		\item Two main modes: ``plain'' \texttt{dm-crypt} and LUKS (Linux Unified Key Setup).
-		\item LUKS is feature-rich, \texttt{dm-crypt} is not.
-		\item Detailed description of LUKS beyond scope of presentation.
-		\item Simplfied: Beginners use LUKS, advanced users \textit{may} wish to use \texttt{dm-crypt}.
-		\end{itemize}
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{Mappings}
-		\begin{itemize}
 		\item Rather than ``encrypt'' function, create abstraction layer over device.
 		\item Entries go under the \texttt{/dev/mapper} directory.
 		\item For example, use \texttt{/dev/mapper/root} to access an encrypted \texttt{/dev/sda}.
@@ -237,7 +236,44 @@
 			\item \texttt{/dev/sda} appears as garbage (because it's encrypted) to anyone looking at it.
 			\item \texttt{/dev/mapper/root} looks like a normal hard drive.
 			\end{itemize}
+		\item Look under \texttt{ps} for \texttt{kworker}.
+		\item Support must be enabled in the kernel (\texttt{CONFIG\_DM\_CRYPT)}.
 		% TODO: Visualization.
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{LUKS and \texttt{dm-crypt}}
+		\begin{itemize}
+		\item Two main modes: LUKS (Linux Unified Key Setup) and ``plain'' \texttt{dm-crypt},
+		\item LUKS is feature-rich, \texttt{dm-crypt} is not.
+		\item Simplfied: Beginners use LUKS, advanced users \textit{may} wish to use \texttt{dm-crypt}.
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{LUKS}
+		\begin{itemize}
+		\item Creates \textit{LUKS header} metadata on disk.
+			\begin{itemize}
+			\item One or more key-slots.
+			\item Cipher/Mode of Operation.
+			\item Encrypted keyfile.
+			\item Automatic key-stretching.
+			\end{itemize}
+		\item Wiping out LUKS header makes disc inaccessible.
+		\item Clearly a LUKS-encrypted device.
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{\texttt{dm-crypt}}
+		\begin{itemize}
+		\item No metadata on-disk.
+		\item No key-stretching.
+		\item Just mappings!
+		\item Re-specify all parameters precisely or get garbage.
+		\item Encrypted device, or wiped device?
 		\end{itemize}
 	\end{frame}
 
@@ -254,25 +290,103 @@
 	\end{frame}
 
 \section{Early Userspace}\label{section:hell}
-	\subsection{Early-Userspace hell}
 	\begin{frame}
-		\frametitle{Early-userspace Hell}
+		\frametitle{Basics}
 		\begin{itemize}
-		\item No root fs, need to set it up.
-		\item Create "early userspace" environment to mount root filesystem.
-		\item Simply copying binaries unlikely to work (dynamically-linked).
+		\item Root filesystem encrypted, how can Linux mount it?
 			\begin{itemize}
-			\item \texttt{ldd} shows dependencies.
-			\item Copy all dependencies, or just make binaries statically-linked.
+			\item Create "early userspace" environment to mount root filesystem.
 			\end{itemize}
-		\item \texttt{busybox} highly-useful toolkit.
-		\item Kernel will execute an \texttt{init} script.
-		\item CPIO gzipped archive.
+		\item Part of Linux boot process.
+		\item Other uses:
+			\begin{itemize}
+			\item Load firmware.
+			\item Mount root filesystem over NFS.
+			\end{itemize}
+		\item Documentation:
+			\begin{itemize}
+			\item \texttt{Documentation/early-userspace/README}
+			\item \texttt{Documentation/init.txt}
+			\item \texttt{Documentation/initrd.txt}
+			\end{itemize}
 		\end{itemize}
 	\end{frame}
 
-% References?
+	\begin{frame}
+		\frametitle{\texttt{initramfs}}
+		\begin{itemize}
+		\item \texttt{initramfs} contains Early-userspace environment.
+		\item Successor to \texttt{initrd}.
+		\item Gzipped CPIO archive.
+			\begin{itemize}
+			\item Magic command: \texttt{find . | cpio --quiet -H newc -o | gzip -9 -n > ../initramfs}
+			\end{itemize}
+		\item Contains initial root file system \& \texttt{init} script.
+		\item Execute \texttt{init} script, which switches to actual root filesystem; early-userspace environment discarded.
+		\item Support must be enable in kernel (\texttt{CONFIG\_BLK\_DEV\_INITRD)}.
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Early-userspace Binaries}
+		\begin{itemize}
+		\item Simply copying binaries unlikely to work (\textit{dynamically-linked}).
+			\begin{itemize}
+			\item \texttt{ldd} shows dynamic-linking dependencies.
+			\end{itemize}
+		\item Copy all dependencies or make binaries \textit{statically-linked}.
+		\item Statically-compiled binaries are \textit{huge}.
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{\texttt{busybox}}
+		\begin{itemize}
+		\item Stripped-down Unix toolkit: \texttt{busybox}.
+		\item Often used in embedded Linux systems.
+		\item Easier than individually adding binaries such as \texttt{cp}, \texttt{ls}, \texttt{rm}, \&c.
+		\item Install built-in binaries: \texttt{busybox --install -s}.
+		\item Uses different, basic shells; certain \texttt{bash} features unsupported (ex: arrays).
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{\texttt{init}}
+		\begin{itemize}
+		\item Does ``whatever'' needs to be done.
+		\item May be a binary or a script.
+		\item Will receive same arguments as the kernel.
+		\item Easy method: find one on the Internet and study/copy it!
+		\item Failure will result in a kernel panic.
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Summary}
+		\begin{itemize}
+		\item Create directory structure for \texttt{initramfs}.
+		\item Copy statically-linked binaries, or dynamically-linked binaries with dependenices.
+		\item Write \texttt{init} script.
+		\item Create a Gzipped CPIO archive:
+			\begin{itemize}
+			\item \texttt{find . | cpio --quiet -H newc -o | gzip -9 -n > ../initramfs}
+			\end{itemize}
+		\item Add \texttt{initramfs=</path/to/initramfs>} kernel argument or build it into the kernel.
+		\end{itemize}
+	\end{frame}
+
+	%TODO: "Fun" visualization.
+
+% References.
+\section{References}
 \begin{frame}
+	\frametitle{References}
+	\begin{itemize}
+	\item Thorough FAQ: https://code.google.com/p/cryptsetup/wiki/FrequentlyAskedQuestions
+	\item Your local distro's Wiki for specifics.
+	\item Linux Documentation under \texttt{Documentation/}.
+	\item \texttt{man} pages.
+	\end{itemize}
 \end{frame}
 
 \end{document}
