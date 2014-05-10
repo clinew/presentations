@@ -9,6 +9,12 @@
 \usepackage{url}
 \usepackage{pstricks}
 \usepackage{pst-node}
+\usepackage{listings}
+
+% Code font-size.
+\lstset{
+	basicstyle=\tiny
+}
 
 % Hyperlinks.
 \def\name{Wade Cline}
@@ -68,7 +74,57 @@
 		\begin{itemize}
 		\item Plaintext: Unencrypted data.
 		\item Ciphertext: Encrypted data.
-		%TODO: Encryption and Decryption images.
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Example Plaintext}
+		\begin{itemize}
+		\item 512-byte block-file of mostly 0's with a quote at the beginning. \\
+		\begin{lstlisting}
+		0000000   "   I   t       i   s       s   h   o   c   k   i   n   g    
+		0000020   t   o       f   i   n   d       h   o   w       m   a   n   y
+		0000040       p   e   o   p   l   e       d   o       n   o   t       b
+		0000060   e   l   i   e   v   e       t   h   e   y       c   a   n    
+		0000100   l   e   a   r   n   ,       a   n   d       h   o   w       m
+		0000120   a   n   y       m   o   r   e       b   e   l   i   e   v   e
+		0000140       l   e   a   r   n   i   n   g       t   o       b   e    
+		0000160   d   i   f   f   i   c   u   l   t   .   "  \n  \0  \0  \0  \0
+		0000200  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0
+		*
+		0001000
+		\end{lstlisting}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Example Ciphertext}
+		\begin{itemize}
+		\item Previous 512-byte block-file encrypted\footnote{\texttt{cryptsetup create --cipher aes-xts-essiv:sha256} with password ``password''} \\
+		\begin{lstlisting}
+		0000000   N   7 207 374 373   z 244 036 246 232 263 214 202   z 307 216
+		0000020 201 251 034 271   1 244 261   C 325 377 333 276 223 003 310 367
+		0000040   "   D 232 230 314   B 331 254 365 373 340 352 231 255 355 240
+		0000060   { 332 006 333 202 317   r  \f   @ 321   > 302   . 177   D   V
+		0000100   q   T 016 345 275 032 377 306   '   7 264 207   D 245 370 363
+		0000120   )   u   a 025   > 330 266   I 035 247 372 327 262   s   H   >
+		0000140 236 241 300 245 366   , 352 347   k 241   V  \n  \a 260   S   f
+		0000160 327   f 022   d   R 375 234 306 020   L 270 035 234 237 320 354
+		0000200 020 244   a 333 235 216 336  \n 021 352 264   & 234 334   T 220
+		0000220   u 363   \ 334 327   7  \a   j 347 332  \b   7   - 247 214 205
+		0000240   t 360   C   ( 204 363 031   l 325 313 306   .  \0 354 036    
+		0000260 305 250   Q  \f 374   y 253   ` 370 021 020   \   `   V 213   0
+		0000300 212 305 237 262   a   !   X 323 317 254   0 345   D   3   > 323
+		0000320   *  \0 005 276   # 222 340   #   t 245   u 251 362 304 231   ]
+		0000340   $ 253   & 272   c 311   b 031 033   P 352 366   % 365   -   <
+		0000360 246 354 245 361 206 364 332 311   _ 006 374 373 377   {   w   :
+		0000400   - 262 214   I 303 223   M   J 256 354 341 004 024   U   & 320
+		0000420   { 271   y   G   ' 264   =   E  \r   1   I   `   >   y   = 207
+		0000440 335 323   )   I   " 274   2 276   O   ] 240   `   Y 237   & 342
+		0000460 351   _ 262 201   J 361 310 002 203  \t 362 260 017 344 205   :
+		0000500   ` 377 216  \a 223   F 362   ) 233 243 036 376 340   I 202   S
+		\end{lstlisting}
+		{\tiny \ldots (truncated for brevity)}
 		\end{itemize}
 	\end{frame}
 
