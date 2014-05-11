@@ -146,7 +146,7 @@
 		\item Different keys used to encrypt plaintext and to decrypt ciphertext.
 		\item Useful when communicating securely between two people.
 		\item Contrasted with Symmetric Cryptography.
-		\item Example: RSA.
+		\item Example: RSA, SSL.
 		\end{itemize}
 	\end{frame}
 
@@ -171,8 +171,18 @@
 			\begin{itemize}
 			\item Common values: 128 \textit{bits} - 512 \textit{bytes} - 4096 bytes, respectively.
 			\end{itemize}
-		% TODO: Visualization.
 		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Example of Cipher-size, sector-size, and block-size}
+		\begin{itemize}
+		\item Red blocks show a 128-bit cipher.
+		\item Green blocks show a 512-byte sector.
+		\item The blue outline shows a 4096-byte block.
+		\end{itemize}
+		\centering
+		\includegraphics[scale=0.065]{images/sizes.ps}
 	\end{frame}
 
 	\begin{frame}
