@@ -175,7 +175,7 @@
 	\end{frame}
 
 	\begin{frame}
-		\frametitle{Example of Cipher-size, sector-size, and block-size}
+		\frametitle{Example of cipher-size, sector-size, and block-size}
 		\begin{itemize}
 		\item Red blocks show a 128-bit cipher.
 		\item Green blocks show a 512-byte sector.
@@ -204,8 +204,21 @@
 		\item Fast, simple, but leaks data.
 		\item Each filesystem has a metaphorical ``fingerprint''.
 		\item Labratory forensic analysis may reveal old data (discussed later).
-		% TODO: Visualization/examples.
 		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Example Fingerprints}
+		\centering
+		\begin{itemize}
+		\item 1 GB freshly-created filesystems.
+		\end{itemize}
+		\begin{tabular}{c c c}
+		\texttt{ext4} & \texttt{xfs} & \texttt{btrfs} \\
+		\protect \includegraphics[scale=0.30]{images/fingerprint_ext4.ps} &
+		\protect \includegraphics[scale=0.30]{images/fingerprint_xfs.ps} &
+		\protect \includegraphics[scale=0.30]{images/fingerprint_btrfs.ps} \\
+		\end{tabular}
 	\end{frame}
 
 	\begin{frame}
