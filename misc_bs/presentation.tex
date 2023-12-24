@@ -1,0 +1,277 @@
+\documentclass{beamer}
+
+% Packages.
+\usepackage{soul}
+
+% Presentation metadata.
+\title{Misc B.S.}
+\author{Frostsnow}
+
+\usetheme[hideothersubsections]{Hannover}
+\usecolortheme{sidebartab}
+
+\begin{document}
+
+% Title.
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{Topic}
+\begin{itemize}
+	\item Teh latest tech? (\st{blockchain} AI)
+	\item Meh\ldots
+	\item Older, more experienced
+	\item Everyday software used poorly by most
+	\item Idea: point out useful features
+\end{itemize}
+\end{frame}
+
+\section{Alt. front-ends}
+\begin{frame}{Alt. front-ends}
+\begin{itemize}
+	\item YouTube: Invidious
+	\item Twitter: Nitter
+	\item No JavaScript!
+	\item Try mirrors list
+	\begin{itemize}
+		\item \texttt{github.com/zedeus/nitter/wiki/Instances}
+		\item \texttt{docs.invidious.io/instances}
+	\end{itemize}
+	\item[]
+	\item \small Examples: \texttt{invidious.snopyta.org}, \texttt{nitter.snopyta.org}
+\end{itemize}
+\end{frame}
+
+\section{Firefox}
+\begin{frame}{History}
+\begin{itemize}
+	\item \texttt{Ctrl+Shift+T}
+	\item \texttt{History -> Recently Closed Tabs}
+	\item[]
+	\item \small Sites: \texttt{www.frostsnow.net}, \texttt{gentoo.org}, \texttt{gitlab.gnome.org}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Page Capture}
+\begin{itemize}
+	\item \texttt{Ctrl+Shift+S}
+	\item[]
+	\item \small Example: \texttt{https://lwn.net/Articles/926798/}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Keyword search}
+\begin{itemize}
+	\item \texttt{Ctrl+L}
+	\item \texttt{Right-click -> Add a Keyword for this Search...}
+	\begin{itemize}
+		\item \texttt{keyword.enabled: false} (ironically)
+	\end{itemize}
+	\item[]
+	\item \small Examples: \texttt{invidious.snopyta.org} (v) (Solar Fields), \texttt{yandex.com} (s) (vodka)
+\end{itemize}
+\end{frame}
+
+\section{uBlock Origin}
+
+\begin{frame}{Quick survey}
+\begin{itemize}
+	\item Who uses an ad blocker?
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Element zapping}
+\begin{itemize}
+	\item \texttt{Icon -> Lightning Bolt}
+	\begin{itemize}
+		\item One shot
+		\item Works with overlays
+	\end{itemize}
+	\item[]
+	\item \small Example: Stack Overflow
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Custom blocking}
+\begin{itemize}
+	\item \texttt{Icon -> Gears setting -> "Settings" tab -> I am an advanced user}
+	\begin{itemize}
+		\item RTFM
+	\end{itemize}
+	\item[]
+	\item \small Example: \texttt{imgur.com} (block FB \& Googlaug anal.)
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Filters}
+\begin{itemize}
+	\item \texttt{Icon -> Eyedropper}
+	\item Image caching fun
+	\item \texttt{Icon -> Gears Icon -> My Filters}
+	\item \texttt{Ctrl+Shift+K}
+	\item[]
+	\item \small Examples: \texttt{invidious.snopyta.org} (easy), \texttt{kitchenaid.com} (hard)
+\end{itemize}
+\end{frame}
+
+\section{yt-dlp}
+
+\begin{frame}{ywn download a video}
+\begin{itemize}
+	\item \texttt{yt-dlp URL}
+	\item \texttt{-F}
+	\item \texttt{Ctrl+U} (Firefox), \texttt{m3u8} file
+	\item[]
+	\item \small Examples: Invidious, Nitter \scriptsize(\texttt{https://nitter.net/unikgirl11/status/1628557542983979009})
+\end{itemize}
+\end{frame}
+
+\section{bash}
+
+\begin{frame}{Basics}
+\begin{itemize}
+	\item \texttt{Ctrl+U, W, E, A, K}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{EOF}
+\begin{itemize}
+	\item \texttt{Ctrl+D}
+	\begin{itemize}
+		\item \texttt{bash}, \texttt{python}, \texttt{irb}
+	\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Redraw screen}
+\begin{itemize}
+	\item \texttt{Ctrl+L}
+	\begin{itemize}
+		\item \texttt{(sleep 10; echo "CLOBBER")}
+	\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Reverse history search}
+\begin{itemize}
+	\item \texttt{Ctrl+R}
+	\begin{itemize}
+		\item \texttt{git add}, \texttt{commit}, \texttt{push}
+	\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Undo}
+\begin{itemize}
+	\item \texttt{Ctrl+Shift+\_}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Edit command in editor}
+\begin{itemize}
+	\item \texttt{Ctrl+X Ctrl+E}
+	\begin{itemize}
+		\item Ex: Nitter URL
+	\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Previous command arguments}
+\begin{itemize}
+	\item \verb|!:#|
+	\begin{itemize}
+		\item Ex: \texttt{vim foo.txt}, \texttt{git add !:1}
+	\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{History expansion}
+\begin{itemize}
+	\item \verb|Esc+Shift+^|
+	\begin{itemize}
+		\item Ex: \texttt{mv foo.txt bar.txy}, \texttt{mv !:2 !:2}
+	\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Forget command}
+\begin{itemize}
+	\item \verb|$HISTCONTROL|
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Job Control}
+\begin{itemize}
+	\item \texttt{Ctrl+Z}
+	\begin{itemize}
+		\item \texttt{vim foo}, \texttt{vim bar}
+	\end{itemize}
+	\item \texttt{jobs}
+	\item \texttt{fg}
+	\item \texttt{bg}
+	\begin{itemize}
+		\item \texttt{minetest}
+	\end{itemize}
+	\item \verb|kill %#|
+\end{itemize}
+\end{frame}
+
+\section{git}
+
+\begin{frame}{Proof-read commits}
+\begin{itemize}
+	\item \texttt{git diff --cached}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Partial add}
+\begin{itemize}
+	\item \texttt{git add -p} (\texttt{--patch})
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Last branch}
+\begin{itemize}
+	\item \texttt{-}
+	\begin{itemize}
+		\item \texttt{git checkout -b feature}, \texttt{git checkout -}, \texttt{git merge -}
+	\end{itemize}
+\end{itemize}
+\end{frame}
+
+\section{vim}
+
+\begin{frame}[fragile]{bash-style tab-complete}
+\begin{itemize}
+	\item \texttt{:set wildmode=longest,list}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{System clipboard}
+\begin{itemize}
+	\item \texttt{+} and \texttt{*} registers (\texttt{:version}, \texttt{+X11})
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Across directories}
+\begin{itemize}
+	\item \texttt{:lcd}, \texttt{:shell}, \verb|$SHLVL|
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Command line window}
+\begin{itemize}
+	\item \texttt{q:}, \texttt{q/}
+\end{itemize}
+\end{frame}
+
+\section*{EOF}
+\begin{frame}
+\begin{itemize}
+	\item It's over!
+\end{itemize}
+\end{frame}
+
+
+\end{document}
